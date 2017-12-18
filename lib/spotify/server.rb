@@ -67,12 +67,12 @@ class Spotify::Server < Sinatra::Base
     end
   end
 
-  get '/play' do
+  post '/play' do
     @clients.each { |ws| ws.send('play') }
     'OK'
   end
 
-  get '/pause' do
+  post '/pause' do
     @clients.each { |ws| ws.send('pause') }
     'OK'
   end
