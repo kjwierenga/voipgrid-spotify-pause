@@ -62,18 +62,18 @@ class Spotify::Server < Sinatra::Base
       ws.rack_response
 
     else
-      @clients.each { |ws| ws.send(params['splat'].first) }
+      @clients.each { |c| c.send(params['splat'].first) }
       erb :index
     end
   end
 
   post '/play' do
-    @clients.each { |ws| ws.send('play') }
+    @clients.each { |c| c.send('play') }
     'OK'
   end
 
   post '/pause' do
-    @clients.each { |ws| ws.send('pause') }
+    @clients.each { |c| c.send('pause') }
     'OK'
   end
 
