@@ -49,9 +49,9 @@ class Spotify::Server < Sinatra::Base
         @clients << ws
       end
 
-      # ws.on(:message) do |msg|
-      #   ws.send(msg.data) # Reverse and reply
-      # end
+      ws.on(:message) do |msg|
+        @clients.each { |c| c.send(msg.data) }
+      end
 
       ws.on(:close) do |event|
         p [:close, ws.object_id, event.code, event.reason]
