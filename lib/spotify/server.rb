@@ -4,10 +4,11 @@ Bundler.require
 require 'dotenv/load'
 require 'faye/websocket'
 require 'sinatra/base'
+require 'json'
 
 Faye::WebSocket.load_adapter('thin')
 
-KEEPALIVE_TIME = 15
+PING_INTERVAL = 1.freeze
 
 class Spotify::Server < Sinatra::Base
   def initialize
@@ -17,7 +18,7 @@ class Spotify::Server < Sinatra::Base
 
   get '/*' do
     if Faye::WebSocket.websocket?(request.env)
-      ws = Faye::WebSocket.new(request.env, nil, { ping: KEEPALIVE_TIME })
+      ws = Faye::WebSocket.new(request.env, nil, ping: PING_INTERVAL)
 
       ws.on(:open) do |event|
         p [:open, ws.object_id]
@@ -25,7 +26,7 @@ class Spotify::Server < Sinatra::Base
       end
 
       ws.on(:message) do |msg|
-        @clients.each { |c| c.send(msg.data) }
+        signal(msg.data)
       end
 
       ws.on(:close) do |event|
@@ -37,22 +38,25 @@ class Spotify::Server < Sinatra::Base
       ws.rack_response
 
     else
-      @clients.each { |c| c.send(params['splat'].first) }
+      signal(params['splat'].first)
       erb :index
     end
   end
 
-  post '/play' do
-    @clients.each { |c| c.send('play') }
-    'OK'
-  end
-
-  post '/pause' do
-    @clients.each { |c| c.send('pause') }
-    'OK'
-  end
-
   post '/notification' do
-    p params.inspect
+    request.body.rewind
+    notification = JSON.parse request.body.read
+
+    signal('pause') if 'ringing' == notification['status']
+    signal('play')  if 'ended'   == notification['status']
+
+    { status: 'OK' }.to_json
   end
+
+  private
+
+    def signal(command)
+      @clients.each { |c| c.send(command) }
+    end
+
 end
