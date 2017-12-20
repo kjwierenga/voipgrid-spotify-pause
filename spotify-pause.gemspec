@@ -39,5 +39,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "thin", "~> 1.7.2"
   spec.add_dependency "puma", "~> 3.11.0"
   spec.add_dependency "dotenv", "~> 2.2.1"
+  spec.add_dependency "json", "~> 2.1.0"
+
   # spec.add_dependency "redis", "~> 4.0.1"
 end
