@@ -47,6 +47,8 @@ class Spotify::Server < Sinatra::Base
     request.body.rewind
     notification = JSON.parse request.body.read
 
+    p [:notification, notification]
+
     signal('pause') if 'ringing' == notification['status']
     signal('play')  if 'ended'   == notification['status']
 
