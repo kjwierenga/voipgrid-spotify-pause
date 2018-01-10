@@ -1,0 +1,67 @@
+PATH
+  remote: .
+  specs:
+    spotify-pause (0.1.0)
+      dotenv (~> 2.2.1)
+      faye-websocket (~> 0.10.7)
+      json (~> 2.1.0)
+      puma (~> 3.11.0)
+      sinatra (~> 1.4.6)
+      thin (~> 1.7.2)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    daemons (1.2.5)
+    diff-lcs (1.3)
+    dotenv (2.2.1)
+    eventmachine (1.2.5)
+    faye-websocket (0.10.7)
+      eventmachine (>= 0.12.0)
+      websocket-driver (>= 0.5.1)
+    json (2.1.0)
+    puma (3.11.0)
+    rack (1.6.8)
+    rack-protection (1.5.3)
+      rack
+    rake (10.5.0)
+    rspec (3.7.0)
+      rspec-core (~> 3.7.0)
+      rspec-expectations (~> 3.7.0)
+      rspec-mocks (~> 3.7.0)
+    rspec-core (3.7.0)
+      rspec-support (~> 3.7.0)
+    rspec-expectations (3.7.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.7.0)
+    rspec-mocks (3.7.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.7.0)
+    rspec-support (3.7.0)
+    sinatra (1.4.8)
+      rack (~> 1.5)
+      rack-protection (~> 1.4)
+      tilt (>= 1.3, < 3)
+    thin (1.7.2)
+      daemons (~> 1.0, >= 1.0.9)
+      eventmachine (~> 1.0, >= 1.0.4)
+      rack (>= 1, < 3)
+    tilt (2.0.8)
+    websocket-driver (0.7.0)
+      websocket-extensions (>= 0.1.0)
+    websocket-extensions (0.1.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler (~> 1.14)
+  rake (~> 10.0)
+  rspec (~> 3.0)
+  spotify-pause!
+
+RUBY VERSION
+   ruby 2.3.4p301
+
+BUNDLED WITH
+   1.16.0
