@@ -2,12 +2,18 @@ require 'dotenv/load'
 require 'faye/websocket'
 require 'eventmachine'
 
+# TODO:
+# Complete state machine implementation
+
 class Spotify::Client
 
   PING_INTERVAL = 1.freeze
   MAX_RETRIES   = 7.freeze
 
   def initialize
+    @state = 'initial'
+    @machine = nil
+
     @ws = nil
     @retries = 0
     em_run
@@ -41,7 +47,9 @@ class Spotify::Client
       if 'close' == event.data
         @ws.close
       else
+        machine.trigger(event.data)
         run_applescript(event.data)
+        puts get_property('player state')
       end
     end
 
@@ -76,9 +84,33 @@ class Spotify::Client
     END
   end
 
+  def get_property(property)
+    applescript <<-END
+      tell application "Spotify"
+        return get #{property} as text
+      end tell
+    END
+  end
+
   def em_run
     EM.run { connect }
   end
+
+  def machine
+    @machine ||= begin
+      fsm = MicroMachine.new(@state)
+
+      fsm.when :is_paused,  'initial' => 'start-paused'
+      fsm.when :is_playing, 'start-paused' => 'playing'
+      fsm.when :ringing,    'playing' => 'paused'
+      fsm.when :ended,      'paused'  => 'playing'
+
+      fsm.on(:any) { @state = @machine.state }
+
+      fsm
+    end
+  end
+
 end
 
 Spotify::Client.new

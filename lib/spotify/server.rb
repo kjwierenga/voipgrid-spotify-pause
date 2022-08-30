@@ -49,6 +49,8 @@ class Spotify::Server < Sinatra::Base
 
     p [:notification, notification]
 
+    # TODO: don't signal pause/play, but pass on notification status to client
+    # which will maintain state
     signal('pause') if 'ringing' == notification['status']
     signal('play')  if 'ended'   == notification['status']
 
